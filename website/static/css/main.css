@@ -1,0 +1,14 @@
+.siimple-navbar {
+    height: 50%;
+    width: 100%;
+}
+
+.content {
+    display: block;
+    margin-left: 20vw;
+    margin-right: 20vw;
+}
+
+.content>* {
+    margin-bottom: 20px;
+}

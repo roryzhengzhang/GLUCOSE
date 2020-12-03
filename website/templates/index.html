@@ -1,0 +1,117 @@
+{% extends "base.html" %} {% block content %}
+<div class="content">
+    <h1>Try out GLUCOSE inference model </h1>
+
+    <div class="story">
+        <p>Story:</p>
+        <p>Gage was riding his bike. <br> A car turned in front of him. <br> Gage turned his bike sharply. <br> He fell off of his bike. <br> Gage skinned his knee.</p>
+    </div>
+
+    <p>Please select the sentence that contains an event X of interest</p>
+
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="sentenceDropMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Plese select the sentence
+        </button>
+        <div class="dropdown-menu" aria-labelledby="sentenceDropMenu">
+            <a class="dropdown-item sent_dropitem" href="#">Gage was riding his bike.</a>
+            <a class="dropdown-item sent_dropitem" href="#">A car turned in front of him.</a>
+            <a class="dropdown-item sent_dropitem" href="#">Gage turned his bike sharply.</a>
+            <a class="dropdown-item sent_dropitem" href="#">He fell off of his bike.</a>
+            <a class="dropdown-item sent_dropitem" href="#">Gage skinned his knee.</a>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="DimDropMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Plese select the dimension of interest
+        </button>
+        <div class="dropdown-menu" aria-labelledby="DimDropMenu">
+            <a class="dropdown-item dim_dropitem" href="#" value="1">Event that directly causes or enables X</a>
+            <a class="dropdown-item dim_dropitem" href="#" value="2">Emotion or basic human drive that motivates X</a>
+            <a class="dropdown-item dim_dropitem" href="#" value="3">Location state that enables X</a>
+            <a class="dropdown-item dim_dropitem" href="#" value="4">Possession state that enables X</a>
+            <a class="dropdown-item dim_dropitem" href="#" value="5">Other attributes enabling X</a>
+            <a class="dropdown-item dim_dropitem" href="#" value="6">Event that X directly causes or enables</a>
+            <a class="dropdown-item dim_dropitem" href="#" value="7">An emotion that is caused by X</a>
+            <a class="dropdown-item dim_dropitem" href="#" value="8">A change in location that X results in</a>
+            <a class="dropdown-item dim_dropitem" href="#" value="9">A change of possession that X results in</a>
+            <a class="dropdown-item dim_dropitem" href="#" value="10">Other changes in property that X results in</a>
+        </div>
+    </div>
+
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="nsamples_input_text">How many answers you'd like GLUCOSE model to generate:</span>
+        </div>
+        <input type="text" class="form-control" id="nsamples_input" aria-label="Default" aria-describedby="nsamples_input_text">
+    </div>
+
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="typeDropMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          What types of knowledge that we want GLUCOSE to infer?
+        </button>
+        <div class="dropdown-menu" aria-labelledby="typeDropMenu">
+            <a class="dropdown-item type-knowledge-dropitem" href="#">Specific</a>
+            <a class="dropdown-item type-knowledge-dropitem" href="#">General</a>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="submit" style="margin-bottom: 5vh;">Submit</button>
+
+    <div>
+        <p>GLUCOSE output is: </p>
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <div id="answer-list">
+
+        </div>
+    </div>
+
+    <script>
+        var selected_sent;
+        var selected_dim;
+        var nsamples;
+        var type_knowledge;
+
+        $(".sent_dropitem").click((event) => {
+            selected_sent = $(event.target).text();
+            $("#sentenceDropMenu").text(selected_sent);
+        })
+
+        $(".dim_dropitem").click((event) => {
+            selected_dim = $(event.target).attr("value");
+            $("#DimDropMenu").text($(event.target).text());
+        })
+
+        $(".type-knowledge-dropitem").click((event) => {
+            type_knowledge = $(event.target).text();
+            $("#typeDropMenu").text(type_knowledge);
+        })
+
+        $("#submit").click((event) => {
+            whole_log_data = {
+                story: $("#story").text().replace(/\n/g, ""),
+                antecedent: selected_sent,
+                dimension: selected_dim,
+                nsamples: $("#nsamples_input").val(),
+                spec_general: type_knowledge
+            }
+
+            $.ajax({
+                url: "{{url_for('request_inference')}}",
+                data: JSON.stringify(whole_log_data),
+                contentType: "application/json;charset=UTF-8",
+                type: "POST",
+                success: (response) => {
+                    console.log(response);
+                },
+                error: function(response) {
+                    console.log("Error occurred when send json to backend server")
+                }
+            })
+        })
+    </script>
+</div>
+{% endblock content %}
