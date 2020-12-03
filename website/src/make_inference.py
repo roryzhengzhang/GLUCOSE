@@ -9,7 +9,7 @@ import tensorflow as tf
 from . import model, sample, encoder
 
 def interact_model(
-    model_name='774M',
+    model_name='trainset_specific',
     seed=None,
     nsamples=1,
     batch_size=1,
