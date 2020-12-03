@@ -19,8 +19,9 @@ def request_inference():
     data = request.get_json()
     print("request inference")
     raw_text = data['story']+"#"+data['antecedent']+"#"+data['dimension']+"#"
-    ans_list = interact_model(nsamples=int(data['nsamples']), raw_text=raw_text)
-    return jsonify(ans_list)
+    #ans_list = interact_model(nsamples=int(data['nsamples']), raw_text=raw_text)
+    ans_list = ["dsdasdas", "rfrwrefd"]
+    return json.dumps({"answer-list": ans_list})
 
 @app.route('/')
 def index():

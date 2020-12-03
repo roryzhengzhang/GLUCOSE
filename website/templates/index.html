@@ -62,10 +62,9 @@
     <div>
         <p>GLUCOSE output is: </p>
         <div class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
+            <!-- <span class="sr-only">Loading...</span> -->
         </div>
         <div id="answer-list">
-
         </div>
     </div>
 
@@ -106,6 +105,14 @@
                 type: "POST",
                 success: (response) => {
                     console.log(response);
+                    response = JSON.parse(response);
+                    var i = 0;
+                    answer_list = response['answer-list']
+                    console.log(answer_list.length)
+                    for (i = 0; i < answer_list.length; i++) {
+                        console.log(answer_list[i]);
+                        $('#answer-list').append($('<p></p>').text(answer_list[i]));
+                    }
                 },
                 error: function(response) {
                     console.log("Error occurred when send json to backend server")
